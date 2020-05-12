@@ -12,6 +12,8 @@ namespace Tak_Prosto
 {
     public partial class Form1 : Form
     {
+        List<Button> buttons = new List<Button>();
+
         public Form1()
         {
             InitializeComponent();
@@ -34,17 +36,51 @@ namespace Tak_Prosto
 
         private void ButtonYes_Click(object sender, EventArgs e)
         {
-            GoButton();
+            var buton =  buttons.Single(x => x.GetHashCode() == sender.GetHashCode());
+
+            GoButton(buton);
         }
 
-        private void GoButton()
+        private void GoButton( Button button )
         {
-            Random random = new Random(buttonYes.Location.X);
-            buttonYes.Location = new Point(GetX(random), GetY(random));
 
-            this.Text = "x: " +  buttonYes.Location.X.ToString() + " y: " +  buttonYes.Location.Y.ToString();
 
-            this.Text += " Max x:" + this.Width + " Max y:" + this.Height; 
+            var newButton = new Button
+            {
+                Location = new System.Drawing.Point(337, 249),
+                Size = new System.Drawing.Size(75, 23),
+                Text = "ДА",
+                UseVisualStyleBackColor = true,
+                BackColor = NewColor( button.BackColor)
+            };
+
+            newButton.MouseEnter += ButtonYes_Click;
+            newButton.MouseHover += ButtonYes_Click;
+            newButton.Location = GetPoint(button.Location.X);
+            button.Location = GetPoint(newButton.Location.Y);
+
+            this.Controls.Add(newButton);
+            
+            buttons.Add(newButton);
+
+
+        }
+
+        private Color NewColor(Color backColor)
+        {
+            Random random = new Random(backColor.R);
+            if ( random.Next (2) == 1 )
+            {
+                return Color.Azure;
+            }
+            else { return Color.Red; }
+        }
+
+        private Point GetPoint( int x )
+        {
+            Random random = new Random(x);
+            return new Point(GetX(random), GetY(random));
+
         }
 
         private int GetY(Random random)
@@ -71,6 +107,8 @@ namespace Tak_Prosto
             this.Text = "Просто так";
             buttonNo.Text = "Нет";
             buttonYes.Text = "ДА";
+
+             buttons.Add(buttonYes);
         }
     }
 }
